@@ -6,13 +6,19 @@ Malá radostná statická stránka s minimalistickou těhotenskou tematikou.
 - Design je responzivní a funguje bez build kroku.
 - Respektuje `prefers-reduced-motion`.
 
-## Lokální spuštění
+## Spuštění / hosting
 
 ```bash
-python3 -m http.server 8080
+./serve.sh
 ```
 
-Potom otevři: <http://localhost:8080>
+Výchozí adresa: <http://localhost:8099>
+
+Port lze změnit:
+
+```bash
+PORT=8080 ./serve.sh
+```
 
 ## Soubory
 
