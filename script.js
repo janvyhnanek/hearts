@@ -1,4 +1,5 @@
 const HEART_COLORS = ["#ff2f5f", "#ff456c", "#e71946", "#ff6f8f", "#c90f35"];
+const CALENDAR_MONTH_DAYS = 30.436875;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function random(min, max) {
@@ -43,16 +44,105 @@ function handlePointer(event) {
   burstAt(event.clientX, event.clientY);
 }
 
+function numberValue(form, name) {
+  const value = Number(new FormData(form).get(name));
+  return Number.isFinite(value) && value > 0 ? value : 0;
+}
+
+function roundAndNormalize(primary, secondary, unitSize) {
+  let first = Math.floor(primary);
+  let second = Math.round(secondary);
+
+  if (second >= unitSize) {
+    first += Math.floor(second / unitSize);
+    second %= unitSize;
+  }
+
+  return [first, second];
+}
+
+function formatUnit(value, one, twoFour, many) {
+  const normalized = Math.abs(value);
+  const word = normalized === 1 ? one : normalized >= 2 && normalized <= 4 ? twoFour : many;
+  return `${value} ${word}`;
+}
+
+function calendarToPregnancy(months, days) {
+  const totalDays = months * CALENDAR_MONTH_DAYS + days;
+  const weeks = Math.floor(totalDays / 7);
+  const remainingDays = totalDays - weeks * 7;
+  const [normalizedWeeks, normalizedDays] = roundAndNormalize(weeks, remainingDays, 7);
+  return { weeks: normalizedWeeks, days: normalizedDays, totalDays };
+}
+
+function pregnancyToCalendar(weeks, days) {
+  const totalDays = weeks * 7 + days;
+  const months = Math.floor(totalDays / CALENDAR_MONTH_DAYS);
+  const remainingDays = totalDays - months * CALENDAR_MONTH_DAYS;
+  const [normalizedMonths, normalizedDays] = roundAndNormalize(months, remainingDays, Math.round(CALENDAR_MONTH_DAYS));
+  return { months: normalizedMonths, days: normalizedDays, totalDays };
+}
+
+function updateCalendarToPregnancy() {
+  const form = document.querySelector("#calendar-to-pregnancy");
+  if (!form) return;
+
+  const months = numberValue(form, "months");
+  const days = numberValue(form, "days");
+  const result = calendarToPregnancy(months, days);
+  form.elements.result.value = `${formatUnit(months, "měsíc", "měsíce", "měsíců")} a ${formatUnit(days, "den", "dny", "dní")} ≈ ${formatUnit(result.weeks, "týden", "týdny", "týdnů")} a ${formatUnit(result.days, "den", "dny", "dní")}`;
+}
+
+function updatePregnancyToCalendar() {
+  const form = document.querySelector("#pregnancy-to-calendar");
+  if (!form) return;
+
+  const weeks = numberValue(form, "weeks");
+  const days = numberValue(form, "days");
+  const result = pregnancyToCalendar(weeks, days);
+  form.elements.result.value = `${formatUnit(weeks, "týden", "týdny", "týdnů")} a ${formatUnit(days, "den", "dny", "dní")} ≈ ${formatUnit(result.months, "měsíc", "měsíce", "měsíců")} a ${formatUnit(result.days, "den", "dny", "dní")}`;
+}
+
+function initCalculator() {
+  const toggle = document.querySelector(".calculator-toggle");
+  const panel = document.querySelector("#calculator-panel");
+  const forms = document.querySelectorAll(".calculator-form");
+
+  toggle?.addEventListener("click", () => {
+    if (!panel) return;
+    const willOpen = panel.hidden;
+    panel.hidden = !willOpen;
+    toggle.setAttribute("aria-expanded", String(willOpen));
+
+    if (willOpen) {
+      updateCalendarToPregnancy();
+      updatePregnancyToCalendar();
+    }
+  });
+
+  forms.forEach((form) => {
+    form.addEventListener("submit", (event) => event.preventDefault());
+    form.addEventListener("input", () => {
+      updateCalendarToPregnancy();
+      updatePregnancyToCalendar();
+    });
+  });
+
+  updateCalendarToPregnancy();
+  updatePregnancyToCalendar();
+}
+
 document.addEventListener("pointerdown", handlePointer, { passive: true });
 
-document.querySelector(".hint")?.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" && event.key !== " ") return;
-  const rect = event.currentTarget.getBoundingClientRect();
-  burstAt(rect.left + rect.width / 2, rect.top + rect.height / 2);
-});
+document.addEventListener("DOMContentLoaded", initCalculator);
 
 window.addEventListener("load", () => {
   const rect = document.querySelector(".card")?.getBoundingClientRect();
   if (!rect) return;
   setTimeout(() => burstAt(rect.left + rect.width / 2, rect.top + rect.height * 0.33), 420);
 });
+
+window.heartsCalculator = {
+  calendarToPregnancy,
+  pregnancyToCalendar,
+};

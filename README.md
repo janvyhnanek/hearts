@@ -3,6 +3,8 @@
 Malá radostná statická stránka s minimalistickou těhotenskou tematikou.
 
 - Kliknutí / tapnutí kamkoliv na stránku vytvoří animovaný výbuch červených srdíček.
+- Welcome obrazovka obsahuje rozbalovací těhotenskou kalkulačku.
+- Kalkulačka převádí kalendářní měsíce + dny na těhotenské týdny + dny a opačně.
 - Design je responzivní a funguje bez build kroku.
 - Respektuje `prefers-reduced-motion`.
 

@@ -27,6 +27,48 @@
         </div>
 
         <h1>Těšíme se na tebe, Pizzabalko</h1>
+
+        <button class="calculator-toggle" type="button" aria-expanded="false" aria-controls="calculator-panel">
+          Těhotenská kalkulačka
+        </button>
+
+        <div class="calculator-panel" id="calculator-panel" hidden>
+          <div class="calculator-note">
+            Orientační přepočet počítá s průměrným kalendářním měsícem 30,44 dne.
+          </div>
+
+          <div class="calculator-grid">
+            <form class="calculator-form" id="calendar-to-pregnancy">
+              <h2>Kalendářní → týdny</h2>
+              <div class="fields">
+                <label>
+                  <span>Měsíce</span>
+                  <input name="months" type="number" inputmode="numeric" min="0" step="1" value="1" />
+                </label>
+                <label>
+                  <span>Dny</span>
+                  <input name="days" type="number" inputmode="numeric" min="0" step="1" value="0" />
+                </label>
+              </div>
+              <output class="result" name="result">1 měsíc a 0 dní ≈ 4 týdny a 2 dny</output>
+            </form>
+
+            <form class="calculator-form" id="pregnancy-to-calendar">
+              <h2>Týdny → kalendářní</h2>
+              <div class="fields">
+                <label>
+                  <span>Týdny</span>
+                  <input name="weeks" type="number" inputmode="numeric" min="0" step="1" value="4" />
+                </label>
+                <label>
+                  <span>Dny</span>
+                  <input name="days" type="number" inputmode="numeric" min="0" step="1" value="2" />
+                </label>
+              </div>
+              <output class="result" name="result">4 týdny a 2 dny ≈ 0 měsíců a 30 dní</output>
+            </form>
+          </div>
+        </div>
       </div>
     </section>
   </main>

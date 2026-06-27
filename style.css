@@ -23,7 +23,8 @@ body {
 
 body {
   margin: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
   background:
@@ -89,7 +90,7 @@ body::before {
 .card {
   position: relative;
   display: grid;
-  width: min(100%, 610px);
+  width: min(100%, 760px);
   justify-items: center;
   padding: clamp(2rem, 6vw, 4.5rem) clamp(1.4rem, 5vw, 4rem);
   overflow: hidden;
@@ -163,14 +164,130 @@ body::before {
 h1 {
   position: relative;
   z-index: 1;
-  max-width: 10ch;
+  max-width: 14ch;
   margin: 0;
   font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
-  font-size: clamp(3rem, 10vw, 6.8rem);
+  font-size: clamp(2.35rem, 7.8vw, 5.6rem);
   font-weight: 500;
   letter-spacing: -0.07em;
   line-height: 0.9;
   text-wrap: balance;
+}
+
+.calculator-toggle {
+  position: relative;
+  z-index: 1;
+  min-height: 48px;
+  margin-top: clamp(1.25rem, 3vw, 1.9rem);
+  padding: 0.82rem 1.25rem;
+  color: var(--ink);
+  font: inherit;
+  font-size: clamp(0.92rem, 2.2vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  border: 1px solid rgba(255, 229, 222, 0.24);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 93, 123, 0.22), rgba(255, 255, 255, 0.075));
+  box-shadow:
+    0 16px 38px rgba(255, 53, 93, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.calculator-toggle:hover,
+.calculator-toggle:focus-visible {
+  background: linear-gradient(180deg, rgba(255, 93, 123, 0.3), rgba(255, 255, 255, 0.105));
+  border-color: rgba(255, 138, 161, 0.56);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.calculator-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 640px);
+  margin-top: 1rem;
+  padding: clamp(1rem, 3vw, 1.35rem);
+  border: 1px solid rgba(255, 229, 222, 0.14);
+  border-radius: 28px;
+  background: rgba(14, 7, 11, 0.32);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: panelIn 240ms ease both;
+  user-select: text;
+}
+
+.calculator-note {
+  margin: 0 0 0.9rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.calculator-form {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  text-align: left;
+  border: 1px solid rgba(255, 229, 222, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.calculator-form h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.72rem;
+  color: var(--ink);
+  font: inherit;
+  border: 1px solid rgba(255, 229, 222, 0.16);
+  border-radius: 15px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+input:focus {
+  border-color: rgba(255, 138, 161, 0.7);
+  box-shadow: 0 0 0 3px rgba(255, 53, 93, 0.12);
+}
+
+.result {
+  min-height: 3.25rem;
+  padding: 0.75rem;
+  color: #ffe7e0;
+  font-weight: 760;
+  line-height: 1.35;
+  border-radius: 16px;
+  background: rgba(255, 53, 93, 0.105);
 }
 
 .lead {
@@ -280,18 +397,45 @@ h1 {
   50% { transform: scale(1.055); }
 }
 
+@keyframes panelIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 520px) {
   body {
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .page {
+    padding: 0.75rem;
   }
 
   .card {
     min-height: min(86svh, 720px);
     align-content: center;
+    padding-block: 1.6rem;
   }
 
   .line-art {
     width: min(80vw, 270px);
+  }
+
+  .fields {
+    grid-template-columns: 1fr;
   }
 }
 
