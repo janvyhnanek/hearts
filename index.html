@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#180b10" />
+  <title>Srdíčka pro malý zázrak</title>
+  <meta name="description" content="Minimalistická radostná stránka: klikni nebo klepni a nech rozletět červená srdíčka." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page" aria-label="Interaktivní stránka se srdíčky">
+    <section class="hero" aria-live="polite">
+      <div class="halo halo-one" aria-hidden="true"></div>
+      <div class="halo halo-two" aria-hidden="true"></div>
+
+      <div class="card">
+        <p class="eyebrow">malý zázrak na cestě</p>
+
+        <div class="line-art" aria-hidden="true">
+          <svg viewBox="0 0 420 360" role="img" aria-label="Jemná line-art ilustrace těhotenství">
+            <path class="parent-line" d="M146 57c-28 30-38 67-31 111 5 30 18 53 38 73" />
+            <path class="parent-line" d="M181 54c-4 40 1 73 18 99 14 22 35 35 59 39" />
+            <path class="belly-line" d="M171 142c50-18 108 11 122 63 13 49-21 104-75 114-54 10-108-27-114-82" />
+            <path class="parent-line" d="M211 70c18 10 30 25 35 47" />
+            <path class="parent-line" d="M145 242c20 18 43 27 72 26" />
+            <path class="heart-line" d="M235 222c-8-13-29-11-31 7-2 18 31 34 31 34s34-18 31-35c-3-17-23-19-31-6z" />
+          </svg>
+        </div>
+
+        <h1>Čekáme tě s láskou</h1>
+        <p class="lead">Klikni kamkoliv na stránku a nech z toho místa rozletět srdíčka.</p>
+        <button class="hint" type="button" aria-label="Spustit srdíčka uprostřed stránky">
+          zkus kliknout / klepnout
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
