@@ -10,6 +10,8 @@ Malá radostná statická stránka s minimalistickou těhotenskou tematikou.
 
 ## Spuštění / hosting
 
+Dočasně běží jednoduchý server na portu 8099:
+
 ```bash
 ./serve.sh
 ```
@@ -20,6 +22,12 @@ Port lze změnit:
 
 ```bash
 PORT=8080 ./serve.sh
+```
+
+Produkční nasazení pro `https://pizzabalka.cz` je připravené v `deploy/`:
+
+```bash
+sudo bash /home/jann/hearts/deploy/deploy-caddy.sh
 ```
 
 ## Soubory
