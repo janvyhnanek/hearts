@@ -24,8 +24,20 @@ if ! command -v caddy >/dev/null 2>&1; then
   apt-get install -y caddy
 fi
 
+if find "${SITE_SRC}" \
+  -path "${SITE_SRC}/.git" -prune -o \
+  -path "${SITE_SRC}/deploy" -prune -o \
+  -type l -print -quit | grep -q .; then
+  echo "Refusing to deploy: publishable tree contains symlinks." >&2
+  find "${SITE_SRC}" \
+    -path "${SITE_SRC}/.git" -prune -o \
+    -path "${SITE_SRC}/deploy" -prune -o \
+    -type l -print >&2
+  exit 1
+fi
+
 install -d -m 0755 "${SITE_DST}"
-rsync -a --delete \
+rsync -a --delete --safe-links \
   --exclude '.git' \
   --exclude 'deploy' \
   --exclude 'README.md' \

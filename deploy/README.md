@@ -20,9 +20,33 @@ Alternativně může být `www` také `A` záznam na `154.13.149.190`.
 
 Na serveru je potřeba root/sudo, protože webserver musí poslouchat na portech 80/443 a instalovat balíčky.
 
+Jednorázově lze spustit přímo:
+
 ```bash
 sudo bash /home/jann/hearts/deploy/deploy-caddy.sh
 ```
+
+### Pohodlný deploy na vyžádání přes Hermes
+
+Aby mohl Hermes spouštět produkční deploy na tvoje vyžádání bez toho, abys pokaždé lezl na server a zadával heslo, spusť jednou ručně:
+
+```bash
+sudo bash /home/jann/hearts/deploy/install-ondemand-deploy.sh
+```
+
+Tím se nainstaluje root-owned helper:
+
+```bash
+/usr/local/sbin/deploy-pizzabalka
+```
+
+A sudoers pravidlo povolí uživateli `jann` bez hesla pouze tento jeden deploy příkaz:
+
+```bash
+sudo /usr/local/sbin/deploy-pizzabalka
+```
+
+Potom můžeš v Telegramu napsat „proveď produkční deploy“ a Hermes ho spustí odsud.
 
 Skript:
 
