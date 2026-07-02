@@ -174,6 +174,50 @@ h1 {
   text-wrap: balance;
 }
 
+.pregnancy-status {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 620px);
+  margin-top: clamp(1.2rem, 3vw, 1.8rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 229, 222, 0.16);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.095), rgba(255, 255, 255, 0.045)),
+    rgba(14, 7, 11, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 18px 44px rgba(0, 0, 0, 0.18);
+  user-select: text;
+}
+
+.status-item {
+  display: grid;
+  min-width: 0;
+  gap: 0.28rem;
+  padding: 0.9rem clamp(0.72rem, 2vw, 1.1rem);
+}
+
+.status-item + .status-item {
+  border-left: 1px solid rgba(255, 229, 222, 0.12);
+}
+
+.status-label {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-item strong {
+  color: #ffe7e0;
+  font-size: clamp(0.95rem, 2.2vw, 1.18rem);
+  line-height: 1.25;
+}
+
 .calculator-toggle {
   position: relative;
   z-index: 1;
@@ -411,6 +455,16 @@ input:focus {
 @media (max-width: 640px) {
   .calculator-grid {
     grid-template-columns: 1fr;
+  }
+
+  .pregnancy-status {
+    grid-template-columns: 1fr;
+    width: min(100%, 360px);
+  }
+
+  .status-item + .status-item {
+    border-top: 1px solid rgba(255, 229, 222, 0.12);
+    border-left: 0;
   }
 }
 

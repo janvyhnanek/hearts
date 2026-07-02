@@ -1,5 +1,7 @@
 const HEART_COLORS = ["#ff2f5f", "#ff456c", "#e71946", "#ff6f8f", "#c90f35"];
 const CALENDAR_MONTH_DAYS = 30.436875;
+const EXPECTED_DUE_DATE = new Date(2026, 8, 17);
+const PREGNANCY_LENGTH_DAYS = 280;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function random(min, max) {
@@ -67,6 +69,60 @@ function formatUnit(value, one, twoFour, many) {
   return `${value} ${word}`;
 }
 
+function startOfDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function addDays(date, days) {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + days);
+  return nextDate;
+}
+
+function daysBetween(startDate, endDate) {
+  return Math.floor((startOfDay(endDate) - startOfDay(startDate)) / 86400000);
+}
+
+function addMonthsClamped(date, months) {
+  const nextDate = new Date(date);
+  const originalDay = nextDate.getDate();
+  nextDate.setDate(1);
+  nextDate.setMonth(nextDate.getMonth() + months);
+  const lastDay = new Date(nextDate.getFullYear(), nextDate.getMonth() + 1, 0).getDate();
+  nextDate.setDate(Math.min(originalDay, lastDay));
+  return nextDate;
+}
+
+function calendarDiff(startDate, endDate) {
+  const start = startOfDay(startDate);
+  const end = startOfDay(endDate);
+  let months = (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth();
+
+  if (addMonthsClamped(start, months) > end) {
+    months -= 1;
+  }
+
+  const anchor = addMonthsClamped(start, months);
+  return { months, days: daysBetween(anchor, end) };
+}
+
+function pregnancyProgress(today = new Date()) {
+  const pregnancyStart = addDays(EXPECTED_DUE_DATE, -PREGNANCY_LENGTH_DAYS);
+  const elapsedDays = Math.max(0, daysBetween(pregnancyStart, today));
+  const weeks = Math.floor(elapsedDays / 7);
+  const days = elapsedDays % 7;
+  const calendar = calendarDiff(pregnancyStart, addDays(pregnancyStart, elapsedDays));
+
+  return {
+    pregnancyStart,
+    elapsedDays,
+    weeks,
+    days,
+    calendarMonths: calendar.months,
+    calendarDays: calendar.days,
+  };
+}
+
 function calendarToPregnancy(months, days) {
   const totalDays = months * CALENDAR_MONTH_DAYS + days;
   const weeks = Math.floor(totalDays / 7);
@@ -132,9 +188,22 @@ function initCalculator() {
   updatePregnancyToCalendar();
 }
 
+function initPregnancyStatus() {
+  const weeksOutput = document.querySelector("#pregnancy-weeks");
+  const calendarOutput = document.querySelector("#pregnancy-calendar");
+  if (!weeksOutput || !calendarOutput) return;
+
+  const progress = pregnancyProgress();
+  weeksOutput.textContent = `${formatUnit(progress.weeks, "týden", "týdny", "týdnů")} a ${formatUnit(progress.days, "den", "dny", "dní")}`;
+  calendarOutput.textContent = `${formatUnit(progress.calendarMonths, "měsíc", "měsíce", "měsíců")} a ${formatUnit(progress.calendarDays, "den", "dny", "dní")}`;
+}
+
 document.addEventListener("pointerdown", handlePointer, { passive: true });
 
-document.addEventListener("DOMContentLoaded", initCalculator);
+document.addEventListener("DOMContentLoaded", () => {
+  initPregnancyStatus();
+  initCalculator();
+});
 
 window.addEventListener("load", () => {
   const rect = document.querySelector(".card")?.getBoundingClientRect();
@@ -145,4 +214,5 @@ window.addEventListener("load", () => {
 window.heartsCalculator = {
   calendarToPregnancy,
   pregnancyToCalendar,
+  pregnancyProgress,
 };
