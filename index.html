@@ -29,6 +29,16 @@
         <h1>Těšíme se na tebe!</h1>
 
         <div class="pregnancy-status" aria-label="Aktuální délka těhotenství">
+          <div class="pregnancy-progress">
+            <div class="progress-topline">
+              <span class="status-label">Loading baby</span>
+              <strong id="pregnancy-percent">--</strong>
+            </div>
+            <div class="progress-track" role="progressbar" aria-label="Průběh těhotenství" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="progress-fill" id="pregnancy-progress-fill"></span>
+            </div>
+          </div>
+
           <div class="status-item">
             <span class="status-label">Těhotenství</span>
             <strong id="pregnancy-weeks">--</strong>

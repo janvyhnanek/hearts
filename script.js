@@ -116,6 +116,7 @@ function pregnancyProgress(today = new Date()) {
   return {
     pregnancyStart,
     elapsedDays,
+    percent: Math.min(100, Math.round((elapsedDays / PREGNANCY_LENGTH_DAYS) * 100)),
     weeks,
     days,
     calendarMonths: calendar.months,
@@ -191,11 +192,17 @@ function initCalculator() {
 function initPregnancyStatus() {
   const weeksOutput = document.querySelector("#pregnancy-weeks");
   const calendarOutput = document.querySelector("#pregnancy-calendar");
-  if (!weeksOutput || !calendarOutput) return;
+  const percentOutput = document.querySelector("#pregnancy-percent");
+  const progressFill = document.querySelector("#pregnancy-progress-fill");
+  const progressTrack = document.querySelector(".progress-track");
+  if (!weeksOutput || !calendarOutput || !percentOutput || !progressFill || !progressTrack) return;
 
   const progress = pregnancyProgress();
   weeksOutput.textContent = `${formatUnit(progress.weeks, "týden", "týdny", "týdnů")} a ${formatUnit(progress.days, "den", "dny", "dní")}`;
   calendarOutput.textContent = `${formatUnit(progress.calendarMonths, "měsíc", "měsíce", "měsíců")} a ${formatUnit(progress.calendarDays, "den", "dny", "dní")}`;
+  percentOutput.textContent = `${progress.percent} %`;
+  progressFill.style.width = `${progress.percent}%`;
+  progressTrack.setAttribute("aria-valuenow", String(progress.percent));
 }
 
 document.addEventListener("pointerdown", handlePointer, { passive: true });
