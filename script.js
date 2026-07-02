@@ -1,6 +1,7 @@
 const HEART_COLORS = ["#ff2f5f", "#ff456c", "#e71946", "#ff6f8f", "#c90f35"];
 const CALENDAR_MONTH_DAYS = 30.436875;
-const EXPECTED_DUE_DATE = new Date(2026, 8, 17);
+const PREGNANCY_TIME_ZONE = "Europe/Prague";
+const EXPECTED_DUE_DATE = calendarDate(2026, 8, 17);
 const PREGNANCY_LENGTH_DAYS = 280;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -69,13 +70,29 @@ function formatUnit(value, one, twoFour, many) {
   return `${value} ${word}`;
 }
 
+function calendarDate(year, month, day) {
+  return new Date(Date.UTC(year, month, day));
+}
+
+function dateInTimeZone(date, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return calendarDate(Number(values.year), Number(values.month) - 1, Number(values.day));
+}
+
 function startOfDay(date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  return calendarDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
 
 function addDays(date, days) {
   const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
+  nextDate.setUTCDate(nextDate.getUTCDate() + days);
   return nextDate;
 }
 
@@ -85,18 +102,18 @@ function daysBetween(startDate, endDate) {
 
 function addMonthsClamped(date, months) {
   const nextDate = new Date(date);
-  const originalDay = nextDate.getDate();
-  nextDate.setDate(1);
-  nextDate.setMonth(nextDate.getMonth() + months);
-  const lastDay = new Date(nextDate.getFullYear(), nextDate.getMonth() + 1, 0).getDate();
-  nextDate.setDate(Math.min(originalDay, lastDay));
+  const originalDay = nextDate.getUTCDate();
+  nextDate.setUTCDate(1);
+  nextDate.setUTCMonth(nextDate.getUTCMonth() + months);
+  const lastDay = new Date(Date.UTC(nextDate.getUTCFullYear(), nextDate.getUTCMonth() + 1, 0)).getUTCDate();
+  nextDate.setUTCDate(Math.min(originalDay, lastDay));
   return nextDate;
 }
 
 function calendarDiff(startDate, endDate) {
   const start = startOfDay(startDate);
   const end = startOfDay(endDate);
-  let months = (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth();
+  let months = (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + end.getUTCMonth() - start.getUTCMonth();
 
   if (addMonthsClamped(start, months) > end) {
     months -= 1;
@@ -108,7 +125,8 @@ function calendarDiff(startDate, endDate) {
 
 function pregnancyProgress(today = new Date()) {
   const pregnancyStart = addDays(EXPECTED_DUE_DATE, -PREGNANCY_LENGTH_DAYS);
-  const elapsedDays = Math.max(0, daysBetween(pregnancyStart, today));
+  const todayDate = dateInTimeZone(today, PREGNANCY_TIME_ZONE);
+  const elapsedDays = Math.max(0, daysBetween(pregnancyStart, todayDate));
   const weeks = Math.floor(elapsedDays / 7);
   const days = elapsedDays % 7;
   const calendar = calendarDiff(pregnancyStart, addDays(pregnancyStart, elapsedDays));
