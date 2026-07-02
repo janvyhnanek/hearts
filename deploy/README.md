@@ -48,6 +48,8 @@ sudo /usr/local/sbin/deploy-pizzabalka
 
 Potom můžeš v Telegramu napsat „proveď produkční deploy“ a Hermes ho spustí odsud.
 
+Deploy helper záměrně odmítne nasazení, pokud má repozitář necommitnuté nebo untracked změny — produkce se tak nasazuje jen ze stavu, který je skutečně v gitu.
+
 Skript:
 
 1. nainstaluje Caddy, pokud není nainstalovaný,

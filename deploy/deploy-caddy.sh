@@ -24,6 +24,15 @@ if ! command -v caddy >/dev/null 2>&1; then
   apt-get install -y caddy
 fi
 
+if ! git -C "${SITE_SRC}" diff --quiet || \
+   ! git -C "${SITE_SRC}" diff --cached --quiet || \
+   [[ -n "$(git -C "${SITE_SRC}" ls-files --others --exclude-standard)" ]]; then
+  echo "Refusing to deploy: ${SITE_SRC} has uncommitted or untracked changes." >&2
+  echo "Commit or stash them first so production deploy matches git." >&2
+  git -C "${SITE_SRC}" status --short >&2
+  exit 1
+fi
+
 if find "${SITE_SRC}" \
   -path "${SITE_SRC}/.git" -prune -o \
   -path "${SITE_SRC}/deploy" -prune -o \
